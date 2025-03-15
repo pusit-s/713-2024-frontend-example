@@ -1,17 +1,20 @@
 import { defineStore } from 'pinia'
-import type { Organizer } from '@/types'
+import type { User } from '@/types'
 import apiClient from '@/services/AxiosClient'
 
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
-    user: null as string | null,
+    user: null as User | null,
   }),
   getters: {
       currentUserName(): string {
         return this.user?.username || ''
-      }
+      },
+      isAdmin(): boolean {
+          return this.user?.roles.includes('ROLE_ADMIN') || false
+        }
     },
   actions: {
     async login(email: string, password: string) {
