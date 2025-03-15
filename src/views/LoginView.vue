@@ -3,6 +3,8 @@
 import InputText from '@/components/InputText.vue'
 import * as yup from 'yup'
 import { useField, useForm } from 'vee-validate'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
 const validationSchema = yup.object({
   email: yup.string().required('The email is required').email('Input must be an email.'),
   password: yup
@@ -19,9 +21,16 @@ const { errors, handleSubmit } = useForm({
 })
 const { value: email } = useField<string>('email')
 const { value: password } = useField<string>('password')
-const onSubmit = handleSubmit((values: { email: string; password: string }) => {
-  console.log(values)
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await authStore.login(values.email, values.password)
+    console.log(response.data.access_token)
+  } catch {
+    console.log('unauthorized')
+  }
+
 })
+
 
 </script>
 
